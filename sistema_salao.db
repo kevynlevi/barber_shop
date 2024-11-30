@@ -1,0 +1,76 @@
+CREATE DATABASE sistema_salao;
+USE sistema_salao;
+-- Tabela de Usuários
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(11) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,  -- A senha será armazenada criptografada
+    tipo ENUM('Administrador', 'Funcionário', 'Cliente') DEFAULT 'Cliente',  -- Tipo de usuário
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Clientes
+CREATE TABLE clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(20),
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Funcionários (Barbeiros, Cabeleireiros, etc.)
+CREATE TABLE funcionarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefone VARCHAR(20),
+    especialidade VARCHAR(100),  -- Ex: Barbeiro, Cabeleireiro, Manicure
+    data_contratacao DATE,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Serviços (Corte de cabelo, manicure, etc.)
+CREATE TABLE servicos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10, 2) NOT NULL,
+    duracao TIME NOT NULL,  -- Duração do serviço (ex: 00:45:00 para corte de cabelo)
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Agendamentos
+CREATE TABLE agendamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    funcionario_id INT NOT NULL,
+    servico_id INT NOT NULL,
+    data_agendamento DATE NOT NULL,
+    hora_agendamento TIME NOT NULL,
+    status ENUM('Pendente', 'Concluído', 'Cancelado') DEFAULT 'Pendente',  -- Status do agendamento
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    CONSTRAINT fk_funcionario FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id),
+    CONSTRAINT fk_servico FOREIGN KEY (servico_id) REFERENCES servicos(id)
+);
+
+-- Tabela de Horários Disponíveis para Funcionários
+CREATE TABLE horarios_disponiveis (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    funcionario_id INT NOT NULL,
+    dia_semana ENUM('Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo') NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fim TIME NOT NULL,
+    CONSTRAINT fk_funcionario_horarios FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id)
+);
+
+-- Tabela de Pagamentos
+CREATE TABLE pagamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    agendamento_id INT NOT NULL,
+    valor DECIMAL(10, 2) NOT NULL,
+    metodo_pagamento ENUM('Dinheiro', 'Cartão', 'Pix') NOT NULL,
+    data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_agendamento FOREIGN KEY (agendamento_id) REFERENCES agendamentos(id)
+);

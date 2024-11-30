@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Cabeleireiro</title>
+    <link rel="stylesheet" href="static/css/registro.css">
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <header>
+        <h1>Registro</h1>
+        <div class="logo">
+            <img src="logo.png" alt="Logo do Cabeleireiro">
+        </div>
+    </header>
+    <main>
+        <form action="cadastro" method="post">
+            <label for="nome">Nome:</label>
+            <input type="text" name="nome" id="nome" required>
+            <label for="nome">CPF:</label>
+            <input type="text" name="cpf" id="CPF" required>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required>
+            <label for="senha">Senha:</label>
+            <input type="password" name="senha" id="senha" required>
+            <button type="submit">Registrar</button>
+        </form>
+        <p class="login">Já tem uma conta? <a href="/login">Faça login aqui</a></p>
+    </main>
+    <footer>
+        <p>&copy; 2024 Cabeleireiro. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
